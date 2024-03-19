@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Intel Corporation
+
+name: Master workflow
+on:
+  push:
+    branches:
+      - master
+      - GHA-integration
+  pull_request:
+
+jobs:
+
+  build-models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.1.x/go.mod'     
+      - name: Build-models
+        run: make models
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.1.x/go.mod'
+      - uses: golangci/golangci-lint-action@v4.0.0
+        with:
+          version: latest
+          args: -v --config ./.golangci.yml --timeout=15m
+
+  build-models-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.1.x/go.mod'
+      - name: Build-models-openapi
+        run: make models-openapi
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.1.x/go.mod'
+      - name: Build Docker image
+        run: make docker-build
+
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: reuse lint
+        uses: fsfe/reuse-action@v3
+
+  fossa-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: FOSSA scan
+        uses: fossa-contrib/fossa-action@v3
+        with:
+          fossa-api-key: 6d304c09a3ec097ba4517724e4a4d17d

@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Intel Corporation
+
+version: 2
+updates:
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "models/aether-2.0.x"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "models/aether-2.1.x"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "models/aether-2.0.x"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "models/aether-2.1.x"
+    schedule:
+      interval: "weekly"

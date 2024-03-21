@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Intel Corporation
+
+name: aether-2.0.x workflow
+
+on:
+  push:
+    branches:
+      - master
+      - GHA-integration
+  pull_request:
+  
+defaults:
+  run:
+    working-directory: ./models/aether-2.0.x
+
+jobs:
+
+  build-models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.0.x/go.mod'
+      - name: Build-models
+        run: go build -o _bin/openapi-gen openapi/openapi-gen.go
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.1.x/go.mod'
+      - name: lint
+        run: make hadolint
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'models/aether-2.0.x/go.mod'
+      - name: Unit tests
+        run: go test ./...
+
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: reuse lint
+        uses: fsfe/reuse-action@v3
+
+  fossa-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: FOSSA scan
+        uses: fossa-contrib/fossa-action@v3
+        with:
+          fossa-api-key: 6d304c09a3ec097ba4517724e4a4d17d

@@ -68,7 +68,8 @@ jobs:
           git clone https://github.com/onosproject/config-models.git
           cd yang; \
           p="."; \
-          mdy=$(`grep ".yang" ../metadata.yaml | awk '{print $$2}' | paste -sd ' ' -`); \
+          mdy=`grep ".yang" ../metadata.yaml | awk '{print $$2}' | paste -sd ' ' -`; \
+          cat myd; \
           for dir in */; do p=$$p:$$dir; done; \
           pyang --lint --lint-ensure-hyphenated-names --ignore-error=XPATH_FUNCTION -p ../config-models/yang-base:$$p $$mdy
           

@@ -65,8 +65,12 @@ jobs:
       - name: yang-lint
         run: |
           pip install pyang
-          make yang-lint
-
+          git clone https://github.com/onosproject/config-models.git
+          cd yang; \
+          p="."; \
+          mdy=`grep ".yang" ../metadata.yaml | awk '{print $$2}' | paste -sd ' ' -`; \
+          for dir in */; do p=$$p:$$dir; done; \
+          pyang --lint --lint-ensure-hyphenated-names --ignore-error=XPATH_FUNCTION -p ../config-models/yang-base:$$p $$md
           
   license-check:
     runs-on: ubuntu-latest

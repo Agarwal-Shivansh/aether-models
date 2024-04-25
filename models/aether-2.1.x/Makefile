@@ -72,11 +72,12 @@ openapi: build-openapi # @HELP Generate OpenApi specs
 	_bin/openapi-gen -o openapi.yaml
 
 yang-lint:
+	sudo git clone https://github.com/onosproject/config-models.git
 	cd yang; \
 	p="."; \
 	mdy=`grep ".yang" ../metadata.yaml | awk '{print $$2}' | paste -sd ' ' -`; \
 	for dir in */; do p=$$p:$$dir; done; \
-	pyang --lint --lint-ensure-hyphenated-names --ignore-error=XPATH_FUNCTION -p $$p $$mdy
+	pyang --lint --lint-ensure-hyphenated-names --ignore-error=XPATH_FUNCTION -p ../config-models/yang-base:$$p $$mdy
 
 test: mod-update # @HELP Run the unit tests
 	go test ./...
